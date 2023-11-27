@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <assignments>
+        <description>Assigns the &quot;Web&quot; Lead Source to this Lead.</description>
+        <name>Assign_Web_Lead_Source</name>
+        <label>Assign &quot;Web&quot; Lead Source</label>
+        <locationX>264</locationX>
+        <locationY>647</locationY>
+        <assignmentItems>
+            <assignToReference>Transform_Form_Submission_to_Lead.LeadSource</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Web</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Lead</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Received_Existing_Lead</name>
+        <label>Received Existing Lead?</label>
+        <locationX>176</locationX>
+        <locationY>431</locationY>
+        <defaultConnector>
+            <targetReference>Transform_Form_Submission_to_Lead</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Received_Existing_Lead</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Existing_Lead</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Relate_Form_Submission_to_Lead</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <description>This Record-Triggered Flow will relate Form Submissions to Leads upon creation.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>formulaLeadId</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    {!Yes_Received_Existing_Lead},
+    {!Get_Existing_Lead.Id},
+    {!Transform_Form_Submission_to_Lead.Id}
+)</expression>
+    </formulas>
+    <interviewLabel>Form Submission After Create Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Form Submission After Create Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <description>Creates a new Lead.</description>
+        <name>Create_Lead</name>
+        <label>Create Lead</label>
+        <locationX>264</locationX>
+        <locationY>755</locationY>
+        <connector>
+            <targetReference>Relate_Form_Submission_to_Lead</targetReference>
+        </connector>
+        <inputReference>Transform_Form_Submission_to_Lead</inputReference>
+    </recordCreates>
+    <recordLookups>
+        <description>Queries an existing Lead with a matching Email.</description>
+        <name>Get_Existing_Lead</name>
+        <label>Get Existing Lead</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Received_Existing_Lead</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Email__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <description>Relates Form Submissions to Leads.</description>
+        <name>Relate_Form_Submission_to_Lead</name>
+        <label>Relate Form Submission to Lead</label>
+        <locationX>176</locationX>
+        <locationY>947</locationY>
+        <inputAssignments>
+            <field>Lead__c</field>
+            <value>
+                <elementReference>formulaLeadId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Existing_Lead</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Email__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Form_Submission__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <transforms>
+        <description>Transforms the Form Submission into a Lead.</description>
+        <name>Transform_Form_Submission_to_Lead</name>
+        <label>Transform Form Submission to Lead</label>
+        <locationX>264</locationX>
+        <locationY>539</locationY>
+        <connector>
+            <targetReference>Assign_Web_Lead_Source</targetReference>
+        </connector>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <objectType>Lead</objectType>
+        <scale>0</scale>
+        <transformValues>
+            <transformValueActions>
+                <outputFieldApiName>Company</outputFieldApiName>
+                <transformType>Map</transformType>
+                <value>
+                    <formulaDataType>String</formulaDataType>
+                    <formulaExpression>IF(
+    ISBLANK({!$Record.Company__c}),
+    &apos;(Not Provided)&apos;,
+    {!$Record.Company__c}
+)</formulaExpression>
+                </value>
+            </transformValueActions>
+            <transformValueActions>
+                <outputFieldApiName>FirstName</outputFieldApiName>
+                <transformType>Map</transformType>
+                <value>
+                    <elementReference>$Record.First_Name__c</elementReference>
+                </value>
+            </transformValueActions>
+            <transformValueActions>
+                <outputFieldApiName>LastName</outputFieldApiName>
+                <transformType>Map</transformType>
+                <value>
+                    <formulaDataType>String</formulaDataType>
+                    <formulaExpression>IF(
+    ISBLANK({!$Record.Last_Name__c}),
+    &apos;(Not Provided)&apos;,
+    {!$Record.Last_Name__c}
+)</formulaExpression>
+                </value>
+            </transformValueActions>
+            <transformValueActions>
+                <outputFieldApiName>Email</outputFieldApiName>
+                <transformType>Map</transformType>
+                <value>
+                    <elementReference>$Record.Email__c</elementReference>
+                </value>
+            </transformValueActions>
+        </transformValues>
+    </transforms>
+</Flow>
