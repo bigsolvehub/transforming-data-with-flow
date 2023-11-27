@@ -1,4 +1,4 @@
-## Transforming Data With Flow
+## Transforming Data with Flow
 
 Utilize Flow's Transform element to map data from source to target and provide formulaic transformations.
 
