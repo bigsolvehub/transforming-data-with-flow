@@ -1,18 +1,13 @@
-# Salesforce DX Project: Next Steps
+## Transforming Data With Flow
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+Utilize Flow's Transform element to map data from source to target and provide formulaic transformations.
 
-## How Do You Plan to Deploy Your Changes?
+Let's explore a practical use case where data transformation is required within Flow to convert Form Submissions into Leads.
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+## Here's our plan:
 
-## Configure Your Salesforce DX Project
+1. Create Record-Triggered Flow
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+## Step-by-Step Guide:
 
-## Read All About It
-
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+Check out [our blog](https://www.bigsolve.com/blog/transforming-data-with-flow) for an instructional guide on building this Flow.
